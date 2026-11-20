@@ -147,7 +147,7 @@ PY_SOURCE
       echo "❌ 源码校验失败，现有服务继续运行"
       return 1
     fi
-    if ! mkdir -p ./.panel-source || ! rm -rf -- "$PANEL_SOURCE_DIR" ||
+    if ! mkdir -p -m 700 ./.panel-source || ! chmod 700 ./.panel-source || ! rm -rf -- "$PANEL_SOURCE_DIR" ||
         ! mv "$work/source" "$PANEL_SOURCE_DIR" || ! touch "$PANEL_SOURCE_DIR/.complete"; then
       rm -rf -- "$work"
       echo "❌ 无法保存构建目录，现有服务继续运行"
