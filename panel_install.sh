@@ -64,7 +64,8 @@ compose() {
 
 # Token is read silently and sent to curl over stdin; never put it in args, env or files.
 private_download() {
-  local url="$1" destination="$2" access_token="$3"
+  local url="$1" destination="$2"
+  local +x access_token="$3"
   printf 'header = "Authorization: Bearer %s"\nheader = "Accept: application/vnd.github+json"\n' "$access_token" |
     curl --config - --fail --silent --show-error --location --proto '=https' --proto-redir '=https' \
       --connect-timeout 10 --max-time 120 --retry 2 --output "$destination" "$url"
@@ -81,7 +82,8 @@ lock_panel_operation() {
 
 prepare_panel_source() {
   command -v python3 >/dev/null 2>&1 || { echo "❌ 请先安装 python3 后重试"; return 1; }
-  local access_token work commit api
+  local work commit api
+  local +x access_token
   echo "🔐 需要 GitHub Token：仅需 flux-panel 仓库 Contents 只读权限，本次使用，不保存"
   read -rsp "请输入 GitHub Token（输入隐藏）: " access_token || return 1
   echo
@@ -156,6 +158,7 @@ PY_SOURCE
   fi
   unset access_token
   rm -rf -- "$work"
+  chmod 700 ./.panel-source || return 1
   echo "✅ 已确认源码版本：${commit:0:12}（Token 未保存）"
 }
 
