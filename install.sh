@@ -83,7 +83,7 @@ show_menu() {
   echo "==============================================="
   echo "请选择操作："
   echo "1. 安装"
-  echo "2. 更新"  
+  echo "2. 更新"
   echo "3. 卸载"
   echo "4. 退出"
   echo "==============================================="
@@ -107,24 +107,24 @@ check_and_install_tcpkill() {
   if command -v tcpkill &> /dev/null; then
     return 0
   fi
-  
+
   # 检测操作系统类型
   OS_TYPE=$(uname -s)
-  
+
   # 检查是否需要 sudo
   if [[ $EUID -ne 0 ]]; then
     SUDO_CMD="sudo"
   else
     SUDO_CMD=""
   fi
-  
+
   if [[ "$OS_TYPE" == "Darwin" ]]; then
     if command -v brew &> /dev/null; then
       brew install dsniff &> /dev/null
     fi
     return 0
   fi
-  
+
   # 检测 Linux 发行版并安装对应的包
   if [ -f /etc/os-release ]; then
     . /etc/os-release
@@ -136,7 +136,7 @@ check_and_install_tcpkill() {
   else
     return 0
   fi
-  
+
   case $DISTRO in
     ubuntu|debian)
       $SUDO_CMD apt update &> /dev/null
@@ -165,7 +165,7 @@ check_and_install_tcpkill() {
       $SUDO_CMD xbps-install -Sy dsniff &> /dev/null
       ;;
   esac
-  
+
   return 0
 }
 
@@ -174,15 +174,15 @@ check_and_install_tcpkill() {
 get_config_params() {
   if [[ -z "$SERVER_ADDR" || -z "$SECRET" ]]; then
     echo "请输入配置参数："
-    
+
     if [[ -z "$SERVER_ADDR" ]]; then
       read -p "服务器地址: " SERVER_ADDR
     fi
-    
+
     if [[ -z "$SECRET" ]]; then
       read -p "密钥: " SECRET
     fi
-    
+
     if [[ -z "$SERVER_ADDR" || -z "$SECRET" ]]; then
       echo "❌ 参数不完整，操作取消。"
       exit 1
@@ -249,7 +249,7 @@ install_flux_agent() {
 
     # 检查并安装 tcpkill
   check_and_install_tcpkill
-  
+
 
   mkdir -p "$INSTALL_DIR"
 
@@ -338,17 +338,17 @@ EOF
 # 更新功能
 update_flux_agent() {
   echo "🔄 开始更新 flux_agent..."
-  
+
   if [[ ! -d "$INSTALL_DIR" ]]; then
     echo "❌ flux_agent 未安装，请先选择安装。"
     return 1
   fi
-  
+
   echo "📥 下载地址: $DOWNLOAD_URL"
-  
+
   # 检查并安装 tcpkill
   check_and_install_tcpkill
-  
+
   # 先下载或编译新版本
   if ! fetch_flux_agent_binary "$INSTALL_DIR/flux_agent.new"; then
     echo "❌ 更新失败：无法获取有效的 flux_agent 二进制。"
@@ -364,21 +364,21 @@ update_flux_agent() {
   # 替换文件
   mv "$INSTALL_DIR/flux_agent.new" "$INSTALL_DIR/flux_agent"
   chmod +x "$INSTALL_DIR/flux_agent"
-  
+
   # 打印版本
   echo "🔎 新版本：$($INSTALL_DIR/flux_agent -V 2>/dev/null || echo 'unknown')"
 
   # 重启服务
   echo "🔄 重启服务..."
   systemctl start flux_agent
-  
+
   echo "✅ 更新完成，服务已重新启动。"
 }
 
 # 卸载功能
 uninstall_flux_agent() {
   echo "🗑️ 开始卸载 flux_agent..."
-  
+
   read -p "确认卸载 flux_agent 吗？此操作将删除所有相关文件 (y/N): " confirm
   if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
     echo "❌ 取消卸载"
@@ -423,7 +423,7 @@ main() {
   while true; do
     show_menu
     read -p "请输入选项 (1-4): " choice
-    
+
     case $choice in
       1)
         install_flux_agent
