@@ -20,15 +20,6 @@ PANEL_INSTALL_URL="https://raw.githubusercontent.com/${DOWNLOAD_REPO}/refs/heads
 DOCKER_COMPOSEV4_URL="https://raw.githubusercontent.com/${DOWNLOAD_REPO}/refs/heads/${DOWNLOAD_BRANCH}/docker-compose-v4.yml"
 DOCKER_COMPOSEV6_URL="https://raw.githubusercontent.com/${DOWNLOAD_REPO}/refs/heads/${DOWNLOAD_BRANCH}/docker-compose-v6.yml"
 
-COUNTRY=$(curl -fsS --connect-timeout 5 --max-time 8 https://ipinfo.io/country 2>/dev/null || true)
-if [ "$COUNTRY" = "CN" ]; then
-    # 拼接 URL
-    DOCKER_COMPOSEV4_URL="https://ghfast.top/${DOCKER_COMPOSEV4_URL}"
-    DOCKER_COMPOSEV6_URL="https://ghfast.top/${DOCKER_COMPOSEV6_URL}"
-fi
-
-
-
 # 根据IPv6支持情况选择docker-compose URL
 get_docker_compose_url() {
   if check_ipv6_support > /dev/null 2>&1; then
