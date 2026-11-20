@@ -13,7 +13,7 @@ REPO_OWNER="pkhosn"
 REPO_NAME="flux-panel"
 REPO_BRANCH="beta"
 COMPOSE_PROJECT_NAME="flux-panel"
-SCRIPT_VERSION="2026-11-20.1"
+SCRIPT_VERSION="2026-11-20.2"
 DOWNLOAD_REPO="pkhosn/flux-panel-downloads"
 DOWNLOAD_BRANCH="main"
 PANEL_INSTALL_URL="https://raw.githubusercontent.com/${DOWNLOAD_REPO}/refs/heads/${DOWNLOAD_BRANCH}/panel_install.sh"
@@ -179,7 +179,7 @@ refresh_panel_update() {
   local candidate result=0
   candidate=$(mktemp ./panel-install.update.XXXXXX)
   echo "🔽 获取最新更新脚本..."
-  if ! curl -fLsS --connect-timeout 10 --max-time 60 --retry 2 -o "$candidate" "$PANEL_INSTALL_URL" ||
+  if ! curl -fLsS --connect-timeout 10 --max-time 60 --retry 2 -o "$candidate" "${PANEL_INSTALL_URL}?update=$(date +%s)" ||
       [[ ! -s "$candidate" ]] || ! bash -n "$candidate" || ! grep -q '^SCRIPT_VERSION=' "$candidate"; then
     rm -f -- "$candidate"
     echo "❌ 更新脚本下载或校验失败，现有服务继续运行"
